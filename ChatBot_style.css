@@ -30,7 +30,10 @@ body{
     background-color: rgb(230, 230, 230);
     border-radius: 5% 0px 0px 5%;
     padding: 10px;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+
 }
 
 .QueryBox{
@@ -55,7 +58,7 @@ body{
     text-decoration: normal;
     text-overflow: ellipsis;
     background-color: rgb(230, 230, 230);
-    transition: all 0.25s ease-in-out;
+    transition: width 0.5s ease-out;    
   }
   
   .InputMessage:focus {
@@ -65,20 +68,22 @@ body{
     color: rgb(0, 0, 0);
     background-color: rgb(255, 255, 255);
     transition: all 0.5s ease-in;
-    border-color: black;
-    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 7px 1px rgba(165, 165, 165, 0.75), -2px -2px 7px 1px rgba(165, 165, 165, 0.75);
   }
   
 
 .User_Message{
+    
     margin: 20px;
     background-color: rgb(128, 128, 255);
     width: fit-content;
+    max-width: 90%;
+    overflow-wrap: break-word;
     height: fit-content;
     border-radius: 20px;
     padding: 10px;
     font: normal 20px/normal "Antic", Helvetica, sans-serif;
-    text-align: center;
+    text-align: justify;
     color: black;
     transition: all 0.5s;
 }
@@ -91,11 +96,13 @@ body{
     margin: 20px;
     background-color: rgb(175, 175, 175);
     width: fit-content;
+    max-width: 90%;
+    overflow-wrap: break-word;
     height: fit-content;
     border-radius: 20px;
     padding: 10px;
     font: normal 20px/normal "Antic", Helvetica, sans-serif;
-    text-align: center;
+    text-align: justify;
     color: black; 
     transition: all 0.5s; 
 }
@@ -118,6 +125,7 @@ body{
   /* Handle */
 .MessageContainer::-webkit-scrollbar-thumb {
     background-color: rgb(44, 44, 255);
+    
   }
   
   /* Handle on hover */
