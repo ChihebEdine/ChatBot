@@ -15,7 +15,7 @@ body{
     grid-template-rows: 1fr 8fr 2fr ;
     padding: 20px;
     row-gap: 20px;
-    border-radius: 5%;
+    /*border-radius: 5%;*/
 }
 
 .NameBox{
@@ -28,7 +28,7 @@ body{
 .MessageContainer{
     /*box-shadow: 1px 1px 5px 1px rgba(140,140,140,1);*/
     background-color: rgb(230, 230, 230);
-    border-radius: 5% 0px 0px 5%;
+    /*border-radius: 5% 0px 0px 5%;*/
     padding: 10px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -52,7 +52,7 @@ body{
     cursor: pointer;
     padding: 0 20px;
     border: none;
-    border-radius: 21px;
+    /*border-radius: 21px 0px 21px 0px;*/
     font: normal 20px/normal "Antic", Helvetica, sans-serif;
     color: rgba(140,140,140,1);
     text-decoration: normal;
