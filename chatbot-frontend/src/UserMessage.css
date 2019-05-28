@@ -1,0 +1,18 @@
+.UserMessage{
+    margin: 20px;
+    background-color: rgb(128, 128, 255);
+    width: fit-content;
+    max-width: 90%;
+    overflow-wrap: break-word;
+    height: fit-content;
+    border-radius: 20px;
+    padding: 10px;
+    font: normal 20px/normal "Antic", Helvetica, sans-serif;
+    text-align: justify;
+    color: black;
+    transition: all 0.5s;
+}
+
+.UserMessage:hover{
+    background-color: rgb(75, 75, 255);
+}

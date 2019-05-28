@@ -1,0 +1,21 @@
+
+.BotMessage{
+  margin: 20px;
+  background-color: rgb(175, 175, 175);
+  width: fit-content;
+  max-width: 90%;
+  overflow-wrap: break-word;
+  height: fit-content;
+  border-radius: 20px;
+  padding: 10px;
+  font: normal 20px/normal "Antic", Helvetica, sans-serif;
+  text-align: justify;
+  color: black; 
+  transition: all 0.5s; 
+}
+  
+  
+.Bot_Message:hover{
+  background-color: rgb(114, 114, 114);
+}
+  
