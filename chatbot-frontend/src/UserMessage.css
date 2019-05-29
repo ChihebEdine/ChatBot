@@ -1,8 +1,8 @@
 .UserMessage{
-    margin: 20px;
+    margin: 20px 20px 20px auto;
     background-color: rgb(128, 128, 255);
     width: fit-content;
-    max-width: 90%;
+    max-width: 80%;
     overflow-wrap: break-word;
     height: fit-content;
     border-radius: 20px;

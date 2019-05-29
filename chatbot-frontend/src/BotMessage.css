@@ -1,9 +1,9 @@
 
 .BotMessage{
-  margin: 20px;
+  margin: 20px auto 20px 20px;
   background-color: rgb(175, 175, 175);
   width: fit-content;
-  max-width: 90%;
+  max-width: 80%;
   overflow-wrap: break-word;
   height: fit-content;
   border-radius: 20px;
@@ -15,7 +15,7 @@
 }
   
   
-.Bot_Message:hover{
+.BotMessage:hover{
   background-color: rgb(114, 114, 114);
 }
   
