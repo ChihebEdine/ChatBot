@@ -1,6 +1,6 @@
 .UserMessage{
     margin: 20px 20px 20px auto;
-    background-color: rgb(128, 128, 255);
+    background-color: orange;
     width: fit-content;
     max-width: 80%;
     overflow-wrap: break-word;
@@ -14,5 +14,5 @@
 }
 
 .UserMessage:hover{
-    background-color: rgb(75, 75, 255);
+    background-color: orangered;
 }

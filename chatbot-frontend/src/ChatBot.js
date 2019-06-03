@@ -37,8 +37,6 @@ class ChatBot extends Component {
      
   handleClick = () => {
 
-    let ChatSocket = new WebSocket(this.path);
-
     //button loading state
     var button = document.getElementById('SubmitButton');
     button.className = 'loading';
@@ -48,15 +46,24 @@ class ChatBot extends Component {
     let input = document.getElementById('Input');
 
     if (input.value !== "") {
+
       this.addMessage("user", input.value);
+      MC.scrollTop = MC.scrollHeight;
       
       let user_message = input.value;
       input.value = "";
-      MC.scrollTop = MC.scrollHeight;
-
+      
+      let ChatSocket = new WebSocket(this.path);
+      
       ChatSocket.onopen = e => {
         ChatSocket.send(JSON.stringify({'message': user_message}));
       };
+
+      ChatSocket.onerror = e => {
+        this.addMessage("bot", "Error : failed to connect to Django server");
+        MC.scrollTop = MC.scrollHeight;
+        button.className = 'ready';
+      }
 
       ChatSocket.onmessage = e => {
         button.className = 'ready';
