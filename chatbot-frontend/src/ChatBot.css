@@ -67,7 +67,7 @@
  
 /* Handle */
 .MessageContainer::-webkit-scrollbar-thumb {
-  background-color: orange;
+  background-color: orangered;
   
 }
 
@@ -256,4 +256,5 @@ button.ready:before {
 button.ready:after {
   opacity: 1;
   animation: button-dot-outro 0.333s;
+  
 }

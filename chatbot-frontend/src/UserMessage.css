@@ -14,5 +14,24 @@
 }
 
 .UserMessage:hover{
-    background-color: orangered;
+    /*background-color: orangered;*/
+    box-shadow: 1px 1px 5px 1px rgba(140,140,140,1);
+    transform: translate(-10px);
 }
+
+.UserMessage::before{
+    content: '';
+    background-color: orangered;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    border-radius: 20px;
+    z-index: -1;
+    transition: all 0.25s; 
+  }
+  
+.UserMessage:hover:before{
+    width:100%;
+  }
