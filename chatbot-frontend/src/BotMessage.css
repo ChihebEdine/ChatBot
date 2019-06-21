@@ -11,30 +11,13 @@
   font: normal 20px/normal "Antic", Helvetica, sans-serif;
   text-align: justify;
   color: black; 
-  transition: all 0.5s; 
+  transition: all 0.25s;
+  
 }
   
   
 .BotMessage:hover{
-  /*background-color: rgb(114, 114, 114);*/
+  background-color: rgb(114, 114, 114);
   box-shadow: 1px 1px 5px 1px rgba(140,140,140,1);
   transform: translate(10px);
-  
-}
-  
-.BotMessage::before{
-  content: '';
-  background-color: rgb(114, 114, 114);
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  border-radius: 20px;
-  z-index: -1;
-  transition: all 0.25s; 
-}
-
-.BotMessage:hover:before{
-  width:100%;
 }

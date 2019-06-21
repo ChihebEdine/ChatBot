@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import './ChatBot.css';
 import MessageContainer from './MessageContainer';
+import SelectionMenu from './SelectionMenu';
 
 
 class ChatBot extends Component {
 
   state = {
-    messages: []
+    messages: [],
+    selectedText: ""
   };
   count = 0;
   path = 'ws://127.0.0.1:8000/ws/chatbot/'; //Django Path
@@ -77,13 +79,30 @@ class ChatBot extends Component {
     }
   }
 
+  handleClickOnBox = (e)=>{
+    let cbc = document.getElementById('cbc');
+    let sm = document.getElementById('SM');
+    let s = window.getSelection();
+    if (!s.isCollapsed) {
+        let dy = e.clientY-cbc.offsetTop ;
+        let dx = e.clientX-cbc.offsetLeft ;
+        sm.style.top = dy + 'px';
+        sm.style.left = dx+ 'px';
+        sm.style.transform = 'scale(1)';
+        this.setState({selectedText : s.anchorNode.textContent.substring(s.extentOffset, s.anchorOffset)}); 
+    }
+    else{
+        sm.style.transform = 'scale(0)';
+    }
+  }
 
   render() {
     return (
-      <div className="ChatBotContainer">
+      <div id="cbc" onClick={this.handleClickOnBox} className="ChatBotContainer">
+        <SelectionMenu selectedText={this.state.selectedText} />
         <div className="NameBox">Chat Bot</div>
         <MessageContainer messages = {this.state.messages} />
-        <div id = "id" className="QueryBox">
+        <div className="QueryBox">
           <input id="Input" className="InputMessage" type="text"  onKeyUp = {this.handleKeys} 
           placeholder="Ask me ! ..." ></input>
           <button onClick={this.handleClick} id="SubmitButton" type="submit">Send</button>

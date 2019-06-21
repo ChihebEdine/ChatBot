@@ -11,7 +11,6 @@
   grid-template-rows: 1fr 8fr 2fr ;
   padding: 20px;
   row-gap: 20px;
-  /*border-radius: 5%;*/
 }
 
 .NameBox{
@@ -38,22 +37,22 @@
   border: none;
   border-radius: 21px;
   font: normal 20px/normal "Antic", Helvetica, sans-serif;
-  color: rgb(185, 185, 185);
+  color: rgba(255, 255, 255, 0.5);
   text-decoration: normal;
   text-overflow: ellipsis;
-  background-color: rgb(200, 200, 200);
-  transition: width 0.25s ease-out;    
+  background-color: rgb(0, 0, 0);
+  transition: width 0.2s ease-out;    
 }
 
 .InputMessage:focus {
   width: 90%;
   cursor: default;
   padding: -13px 20px 0;
-  color: rgb(0, 0, 0);
-  background-color: rgb(240, 240, 240);
-  transition: all 0.5s ease-in;
-  /*box-shadow: 2px 2px 7px 1px rgba(255, 255, 255, 0.75), -2px -2px 7px 1px rgba(165, 165, 165, 0.75);
-*/}
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
+  transition: all 0.2s ease-in;
+  box-shadow: 0px 0px 5px 1px orange;
+}
 
 /* Scrolling bar style */
 .MessageContainer::-webkit-scrollbar {
@@ -186,12 +185,13 @@
     opacity: 1;
   }
 }
+
 button {
   position: relative;
   overflow: hidden;
   width: 7rem;
   color: orange;
-  border: 2px solid orange;
+  border: 1px solid orange;
   background-color: rgb(0, 0, 0);
   cursor: pointer;
   line-height: 2;
@@ -256,5 +256,4 @@ button.ready:before {
 button.ready:after {
   opacity: 1;
   animation: button-dot-outro 0.333s;
-  
 }
