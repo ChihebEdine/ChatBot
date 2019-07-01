@@ -6,12 +6,21 @@ class KeyWord extends Component {
 
     handleClick = (e) => {
         let input = document.getElementById("Input");
+        this.props.updateKeyWords(this.props.word);
         input.value += (" " + this.props.word);
     }
 
-    render() {
+    handleClose = (e) => {
+        console.log(this.props.word);
+    }
 
-        return <div onClick = {this.handleClick} className="keyWord">{this.props.word}</div>
+    render() {
+        return (
+            <div onClick={this.handleClick} className="keyWord">
+                <div>{this.props.word} </div>
+                <div onClick={this.handleClose} className="close"> </div>
+            </div>
+        )
     }
 }
 

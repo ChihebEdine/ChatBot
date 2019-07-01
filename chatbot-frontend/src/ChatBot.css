@@ -17,6 +17,7 @@
   font: normal 20px/normal "Antic", Helvetica, sans-serif;
   text-align: center;
   color: orange; 
+  user-select: none;
 }
 
 .QueryBox{
@@ -26,6 +27,17 @@
   padding: 20px;
   column-gap: 20px;
   overflow: hidden;
+}
+
+.WordBox{
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 1fr 3fr;
+}
+
+.KeyWordBox{
+  margin: 5px;
+  color: white;
 }
 
 .InputMessage {

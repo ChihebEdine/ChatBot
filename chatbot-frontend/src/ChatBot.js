@@ -8,14 +8,17 @@ class ChatBot extends Component {
 
   state = {
     messages: [],
-    selectedText: ""
+    selectedText: "",
   };
+
+
   count = 0;
   path = 'ws://127.0.0.1:8000/ws/chatbot/'; //Django Path
+  keywordsSelected = [];
 
   addMessage = (author, message, keywords) => {
     let NewMessage = {
-      id : this.count,
+      id: this.count,
       author: author,
       content: message,
       keywords: keywords
@@ -25,7 +28,7 @@ class ChatBot extends Component {
     Messages.push(NewMessage);
     this.setState({ messages: Messages });
 
-    this.count +=1;
+    this.count += 1;
   }
 
   handleKeys = (e) => {
@@ -37,7 +40,6 @@ class ChatBot extends Component {
   }
 
 
-     
   handleClick = () => {
 
     //button loading state
@@ -50,16 +52,17 @@ class ChatBot extends Component {
 
     if (input.value !== "") {
 
-      this.addMessage("user", input.value, []);
+      this.addMessage("user", input.value, this.keywordsSelected);
       MC.scrollTop = MC.scrollHeight;
-      
+
       let user_message = input.value;
       input.value = "";
-      
+
       let ChatSocket = new WebSocket(this.path);
-      
+
       ChatSocket.onopen = e => {
-        ChatSocket.send(JSON.stringify({'message': user_message}));
+        ChatSocket.send(JSON.stringify({ 'message': user_message, 'keywordsSelected': this.keywordsSelected }));
+        this.keywordsSelected = [];
       };
 
       ChatSocket.onerror = e => {
@@ -75,26 +78,30 @@ class ChatBot extends Component {
         MC.scrollTop = MC.scrollHeight;
       }
     }
-    else{
+    else {
       button.className = 'ready';
     }
   }
 
-  handleClickOnBox = (e)=>{
+  handleClickOnBox = (e) => {
     let cbc = document.getElementById('cbc');
     let sm = document.getElementById('SM');
     let s = window.getSelection();
     if (!s.isCollapsed) {
-        let dy = e.clientY-cbc.offsetTop ;
-        let dx = e.clientX-cbc.offsetLeft ;
-        sm.style.top = dy + 'px';
-        sm.style.left = dx+ 'px';
-        sm.style.transform = 'scale(1)';
-        this.setState({selectedText : s.anchorNode.textContent.substring(s.extentOffset, s.anchorOffset)}); 
+      let dy = e.clientY - cbc.offsetTop;
+      let dx = e.clientX - cbc.offsetLeft;
+      sm.style.top = dy + 'px';
+      sm.style.left = dx + 'px';
+      sm.style.transform = 'scale(1)';
+      this.setState({ selectedText: s.anchorNode.textContent.substring(s.extentOffset, s.anchorOffset) });
     }
-    else{
-        sm.style.transform = 'scale(0)';
+    else {
+      sm.style.transform = 'scale(0)';
     }
+  }
+
+  updateKeyWords = (newWord) => {
+    this.keywordsSelected.push(newWord);
   }
 
   render() {
@@ -102,16 +109,17 @@ class ChatBot extends Component {
       <div id="cbc" onClick={this.handleClickOnBox} className="ChatBotContainer">
         <SelectionMenu selectedText={this.state.selectedText} />
         <div className="NameBox">Chat Bot</div>
-        <MessageContainer messages = {this.state.messages} />
+        <MessageContainer updateKeyWords={this.updateKeyWords} messages={this.state.messages} />
         <div className="QueryBox">
-          <input id="Input" className="InputMessage" type="text"  onKeyUp = {this.handleKeys} 
-          placeholder="Ask me !" autocomplete="off" ></input>
+          <input id="Input" className="InputMessage" type="text" onKeyUp={this.handleKeys}
+            placeholder="Ask me !" autoComplete="off" ></input>
           <button onClick={this.handleClick} id="SubmitButton" type="submit">Send</button>
         </div>
       </div>
+
     );
   }
-}
 
+}
 
 export default ChatBot;

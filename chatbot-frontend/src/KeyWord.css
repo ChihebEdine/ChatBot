@@ -1,14 +1,18 @@
 .keyWord{
-    position: initial;
+    position: relative;
     margin: 5px;
     padding: 10px;
     float:left;
     font: normal 20px/normal "Antic", Helvetica, sans-serif;
     width: fit-content;
+    user-select: none;
     background-color: rgb(0, 0, 0);
     color: white;
-    border-radius: 20px;
-    transform: all 0.25s
+    border-radius: 20px 0 20px 20px;
+    transform: all 0.25s;
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 5fr 1fr;
     
 }
 
@@ -16,3 +20,37 @@
     background-color: gray;
 }
 
+.close {
+    position: absolute;
+    right: 0px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+  }
+
+  .close:before, .close:after {
+    position: absolute;
+    right: 5px;
+    content: '';
+    height: 10px;
+    width: 2px;
+    background-color: orange;
+    transition: all 0.25s;
+  }
+
+.close:before:hover, .close:after:hover {
+    background-color: orangered;
+}
+  .close:before {
+    transform: rotate(45deg);
+  }
+  .close:after {
+    transform: rotate(-45deg);
+  }
+  
+.keyWordContainer{
+    position: relative;
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 5fr 1fr;
+}

@@ -8,7 +8,7 @@ class BotMessage extends Component {
     counter = 0;
 
     showKeyWord = (keyword, id) => {
-        return <KeyWord  key={"kw-" + id }  word={keyword} />;
+        return <KeyWord key={"kw-" + id } updateKeyWords={this.props.updateKeyWords}  word={keyword} />;
     }
 
     render() {
