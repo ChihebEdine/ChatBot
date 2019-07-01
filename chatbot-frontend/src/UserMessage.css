@@ -1,11 +1,11 @@
 .UserMessage{
-    margin: 20px 20px 20px auto;
+    margin: 20px 20px 5px auto;
     background-color: orange;
     width: fit-content;
     max-width: 80%;
     overflow-wrap: break-word;
     height: fit-content;
-    border-radius: 20px;
+    border-radius: 20px 20px 0px 20px;
     padding: 10px;
     font: normal 20px/normal "Antic", Helvetica, sans-serif;
     text-align: justify;

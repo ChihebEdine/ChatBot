@@ -13,11 +13,12 @@ class ChatBot extends Component {
   count = 0;
   path = 'ws://127.0.0.1:8000/ws/chatbot/'; //Django Path
 
-  addMessage = (author, message) => {
+  addMessage = (author, message, keywords) => {
     let NewMessage = {
       id : this.count,
       author: author,
       content: message,
+      keywords: keywords
     }
 
     var Messages = this.state.messages;
@@ -49,7 +50,7 @@ class ChatBot extends Component {
 
     if (input.value !== "") {
 
-      this.addMessage("user", input.value);
+      this.addMessage("user", input.value, []);
       MC.scrollTop = MC.scrollHeight;
       
       let user_message = input.value;
@@ -62,7 +63,7 @@ class ChatBot extends Component {
       };
 
       ChatSocket.onerror = e => {
-        this.addMessage("bot", "Error : failed to connect to Django server");
+        this.addMessage("bot", "Error : failed to connect to Django server", []);
         MC.scrollTop = MC.scrollHeight;
         button.className = 'ready';
       }
@@ -70,7 +71,7 @@ class ChatBot extends Component {
       ChatSocket.onmessage = e => {
         button.className = 'ready';
         var data = JSON.parse(e.data);
-        this.addMessage("ChatBot", data['message']);
+        this.addMessage("bot", data['message'], data['keywords']);
         MC.scrollTop = MC.scrollHeight;
       }
     }
@@ -104,7 +105,7 @@ class ChatBot extends Component {
         <MessageContainer messages = {this.state.messages} />
         <div className="QueryBox">
           <input id="Input" className="InputMessage" type="text"  onKeyUp = {this.handleKeys} 
-          placeholder="Ask me ! ..." ></input>
+          placeholder="Ask me !" autocomplete="off" ></input>
           <button onClick={this.handleClick} id="SubmitButton" type="submit">Send</button>
         </div>
       </div>

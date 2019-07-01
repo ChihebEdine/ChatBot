@@ -16,5 +16,6 @@ class ChatConsumer(WebsocketConsumer):
         bot_message = "message recieved ! but i am not available ! your message was : " + user_message
 
         self.send(text_data=json.dumps({
-            'message': bot_message
+            'message': bot_message,
+            'keywords': ["Yes", "No"]
         }))

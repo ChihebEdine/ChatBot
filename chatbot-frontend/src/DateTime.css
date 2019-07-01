@@ -1,0 +1,16 @@
+.dateTimeLeft{
+    margin: 5px auto 20px 20px;
+    font: normal 20px/normal "Antic", Helvetica, sans-serif;
+    font-size: 10px;
+    width: fit-content;
+    color: rgb(230, 230, 230);
+}
+
+
+.dateTimeRight{
+    margin: 5px 20px 20px auto;
+    font: normal 20px/normal "Antic", Helvetica, sans-serif;
+    font-size: 10px;
+    color: rgb(230, 230, 230);
+    width: fit-content;
+}
