@@ -1,4 +1,4 @@
-.keyWord{
+.keyWordL{
     position: relative;
     margin: 5px;
     padding: 10px;
@@ -8,21 +8,53 @@
     user-select: none;
     background-color: rgb(0, 0, 0);
     color: white;
-    border-radius: 20px 0 20px 20px;
-    transform: all 0.25s;
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-columns: 5fr 1fr;
-    
+    border-radius: 0px 20px 20px 20px;
+    transition: all 0.25s;  
 }
 
-.keyWord:hover{
+.keyWordL:hover{
     background-color: gray;
+}
+
+.keyWordR{
+  position: relative;
+  margin: 5px;
+  padding: 10px;
+  float: right;
+  font: normal 20px/normal "Antic", Helvetica, sans-serif;
+  width: fit-content;
+  user-select: none;
+  background-color: orangered;
+  color: white;
+  border-radius: 20px 0 20px 20px;
+  transition: all 0.25s;  
+}
+
+.keyWordR:hover{
+  background-color: orange;
+}
+
+.keyWordS{
+  position: relative;
+  margin: 5px;
+  padding: 10px;
+  float:left;
+  font: normal 20px/normal "Antic", Helvetica, sans-serif;
+  width: fit-content;
+  user-select: none;
+  background-color: rgb(0, 0, 0);
+  color: white;
+  border-radius: 20px;
+  transition: all 0.25s;
+}
+
+.keyWordS:hover{
+  background-color: gray;
 }
 
 .close {
     position: absolute;
-    right: 0px;
+    left: 0;
     top: 0;
     width: 10px;
     height: 10px;
@@ -48,9 +80,3 @@
     transform: rotate(-45deg);
   }
   
-.keyWordContainer{
-    position: relative;
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-columns: 5fr 1fr;
-}

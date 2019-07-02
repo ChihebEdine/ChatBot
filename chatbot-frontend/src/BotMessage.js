@@ -5,10 +5,20 @@ import KeyWord from './KeyWord'
 
 class BotMessage extends Component {
 
-    counter = 0;
+    state = {
+        keywords: this.props.keywords
+    }
 
-    showKeyWord = (keyword, id) => {
-        return <KeyWord key={"kw-" + id } updateKeyWords={this.props.updateKeyWords}  word={keyword} />;
+
+    keyCounter = 0;
+
+    removeKeyWord = (word) => {
+        let list = this.state.keywords;
+        let index = list.indexOf(word);
+        if (index > -1) {
+            list.splice(index, 1);
+        }
+        this.setState({ keywords : list });
     }
 
     render() {
@@ -18,9 +28,9 @@ class BotMessage extends Component {
                     {this.props.content}
                 </div>
                 <div>
-                    {this.props.keywords.map(keyword => {
-                        this.counter +=1;
-                        return this.showKeyWord(keyword, this.counter);  
+                    {this.state.keywords.map(keyword => {
+                        this.keyCounter += 1;
+                        return <KeyWord key={"kwb-" + this.keyCounter} updateKeyWords={this.props.updateKeyWords} removeKeyWord={this.removeKeyWord} word={keyword} CName="keyWordL" ShowCloseCross={false}/>;
                     })}
                 </div>
             </div>

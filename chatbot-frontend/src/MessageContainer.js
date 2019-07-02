@@ -11,14 +11,14 @@ class MessageContainer extends Component {
         if (message.author === "user") {
             return (
                 <div key = {"d" + message.id}>
-                    <UserMessage key={message.id} content={message.content} />
+                    <UserMessage key={message.id} content={message.content} keywords={message.keywords} ShowCloseCross={false}/>
                     <DateTime key={"t" + message.id} position="right"/>
                 </div>);
         }
         else if(message.author === "bot") {
             return (
                 <div key = {"d" + message.id}>
-                    <BotMessage updateKeyWords={this.props.updateKeyWords} key={message.id} content={message.content} keywords={message.keywords} />
+                    <BotMessage updateKeyWords={this.props.updateKeyWords} key={message.id} content={message.content} keywords={message.keywords} ShowCloseCross={false}/>
                     <DateTime key={"t" + message.id} position="left"/>
                 </div>);
         }

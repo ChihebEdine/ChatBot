@@ -17,5 +17,5 @@ class ChatConsumer(WebsocketConsumer):
 
         self.send(text_data=json.dumps({
             'message': bot_message,
-            'keywords': text_data_json['keywordsSelected']+["Yes", "No", "Maybe"]
+            'keywords': ["facebook", "google", "amazon"]
         }))

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './ChatBot.css';
 import MessageContainer from './MessageContainer';
 import SelectionMenu from './SelectionMenu';
+import KeyWord from './KeyWord';
 
 
 class ChatBot extends Component {
@@ -9,16 +10,19 @@ class ChatBot extends Component {
   state = {
     messages: [],
     selectedText: "",
+    path: 'ws://127.0.0.1:8000/ws/chatbot/',
+    count: 0,
+    keywordsSelected: [],
   };
 
+  keyCounter = 0;
 
-  count = 0;
-  path = 'ws://127.0.0.1:8000/ws/chatbot/'; //Django Path
-  keywordsSelected = [];
+
+  //keywordsSelected = [];
 
   addMessage = (author, message, keywords) => {
     let NewMessage = {
-      id: this.count,
+      id: this.state.count,
       author: author,
       content: message,
       keywords: keywords
@@ -28,7 +32,7 @@ class ChatBot extends Component {
     Messages.push(NewMessage);
     this.setState({ messages: Messages });
 
-    this.count += 1;
+    this.setState({ count: this.state.count + 1 });
   }
 
   handleKeys = (e) => {
@@ -50,19 +54,20 @@ class ChatBot extends Component {
     let MC = document.getElementById('MC');
     let input = document.getElementById('Input');
 
-    if (input.value !== "") {
-
-      this.addMessage("user", input.value, this.keywordsSelected);
+    if (input.value !== "" || (this.state.keywordsSelected).length !== 0) {
+      let value = input.value;
+      if(value ===""){ value = "..."}
+      this.addMessage("user", value, this.state.keywordsSelected);
       MC.scrollTop = MC.scrollHeight;
 
       let user_message = input.value;
       input.value = "";
 
-      let ChatSocket = new WebSocket(this.path);
+      let ChatSocket = new WebSocket(this.state.path);
 
       ChatSocket.onopen = e => {
-        ChatSocket.send(JSON.stringify({ 'message': user_message, 'keywordsSelected': this.keywordsSelected }));
-        this.keywordsSelected = [];
+        ChatSocket.send(JSON.stringify({ 'message': user_message, 'keywordsSelected': this.state.keywordsSelected }));
+        this.setState({ keywordsSelected: [] });
       };
 
       ChatSocket.onerror = e => {
@@ -93,7 +98,7 @@ class ChatBot extends Component {
       sm.style.top = dy + 'px';
       sm.style.left = dx + 'px';
       sm.style.transform = 'scale(1)';
-      this.setState({ selectedText: s.anchorNode.textContent.substring(s.extentOffset, s.anchorOffset) });
+      this.setState({ selectedText: " " + s.anchorNode.textContent.substring(s.extentOffset, s.anchorOffset) });
     }
     else {
       sm.style.transform = 'scale(0)';
@@ -101,7 +106,20 @@ class ChatBot extends Component {
   }
 
   updateKeyWords = (newWord) => {
-    this.keywordsSelected.push(newWord);
+    let newKeyWords = this.state.keywordsSelected;
+    if (newKeyWords.indexOf(newWord) === -1) {
+      newKeyWords.push(newWord);
+      this.setState({ keywordsSelected: newKeyWords });
+    }
+  }
+
+  removeKeyWord = (word) => {
+    let list = this.state.keywordsSelected;
+    let index = list.indexOf(word);
+    if (index > -1) {
+      list.splice(index, 1);
+    }
+    this.setState({ keywordsSelected: list });
   }
 
   render() {
@@ -115,8 +133,13 @@ class ChatBot extends Component {
             placeholder="Ask me !" autoComplete="off" ></input>
           <button onClick={this.handleClick} id="SubmitButton" type="submit">Send</button>
         </div>
+        <div className="keywords-selected">
+          {this.state.keywordsSelected.map(keyword => {
+            this.keyCounter += 1;
+            return <KeyWord key={"kws-" + this.keyCounter} updateKeyWords={() => {}} removeKeyWord={this.removeKeyWord} word={keyword} CName="keyWordS" ShowCloseCross={true} />
+          })}
+        </div>
       </div>
-
     );
   }
 

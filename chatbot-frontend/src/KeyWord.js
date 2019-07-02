@@ -5,20 +5,26 @@ import './KeyWord.css';
 class KeyWord extends Component {
 
     handleClick = (e) => {
-        let input = document.getElementById("Input");
         this.props.updateKeyWords(this.props.word);
-        input.value += (" " + this.props.word);
+        if(!this.props.ShowCloseCross){
+            this.props.removeKeyWord(this.props.word);}
     }
 
     handleClose = (e) => {
-        console.log(this.props.word);
+        this.props.removeKeyWord(this.props.word); 
+    }
+
+    CloseCross = () => {
+        if(this.props.ShowCloseCross){
+            return <div onClick={this.handleClose} className="close"> </div>;
+        }
     }
 
     render() {
         return (
-            <div onClick={this.handleClick} className="keyWord">
-                <div>{this.props.word} </div>
-                <div onClick={this.handleClose} className="close"> </div>
+            <div onClick={this.handleClick} className={this.props.CName}>
+                {this.CloseCross()}
+                <div>{this.props.word}</div>
             </div>
         )
     }
