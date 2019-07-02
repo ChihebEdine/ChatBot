@@ -4,6 +4,9 @@ import MessageContainer from './MessageContainer';
 import SelectionMenu from './SelectionMenu';
 import KeyWord from './KeyWord';
 
+//remarques : entrée utilisateur => mots cles 
+// sortie Chatbot : mots cles + phrase 
+
 
 class ChatBot extends Component {
 
