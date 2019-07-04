@@ -5,13 +5,13 @@ import './KeyWord.css';
 class KeyWord extends Component {
 
     handleClick = (e) => {
-        this.props.updateKeyWords(this.props.word);
+        this.props.updateKeyWords(this.props.word, this.props.parentMessageId);
         if(!this.props.ShowCloseCross){
             this.props.removeKeyWord(this.props.word);}
     }
 
     handleClose = (e) => {
-        this.props.removeKeyWord(this.props.word); 
+        this.props.removeKeyWord(this.props.word,this.props.parentMessageId); 
     }
 
     CloseCross = () => {

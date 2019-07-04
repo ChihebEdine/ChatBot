@@ -60,7 +60,7 @@ class ChatBot extends Component {
     if (input.value !== "" || (this.state.keywordsSelected).length !== 0) {
       let value = input.value;
       if(value ===""){ value = "..."}
-      this.addMessage("user", value, this.state.keywordsSelected);
+      this.addMessage("user", value, this.state.keywordsSelected.map(w => w.content));
       MC.scrollTop = MC.scrollHeight;
 
       let user_message = input.value;
@@ -69,7 +69,7 @@ class ChatBot extends Component {
       let ChatSocket = new WebSocket(this.state.path);
 
       ChatSocket.onopen = e => {
-        ChatSocket.send(JSON.stringify({ 'message': user_message, 'keywordsSelected': this.state.keywordsSelected }));
+        ChatSocket.send(JSON.stringify({ 'message': user_message, 'keywordsSelected': this.state.keywordsSelected.map(s => s.content) }));
         this.setState({ keywordsSelected: [] });
       };
 
@@ -82,6 +82,7 @@ class ChatBot extends Component {
       ChatSocket.onmessage = e => {
         button.className = 'ready';
         var data = JSON.parse(e.data);
+
         this.addMessage("bot", data['message'], data['keywords']);
         MC.scrollTop = MC.scrollHeight;
       }
@@ -108,21 +109,22 @@ class ChatBot extends Component {
     }
   }
 
-  updateKeyWords = (newWord) => {
+  updateKeyWords = (newWord, parentMessageId) => {
     let newKeyWords = this.state.keywordsSelected;
-    if (newKeyWords.indexOf(newWord) === -1) {
-      newKeyWords.push(newWord);
+    if ( newKeyWords.findIndex(function(s){return s.content === newWord}) === -1) {
+      newKeyWords.push({content:newWord, parentMessageId:parentMessageId});
       this.setState({ keywordsSelected: newKeyWords });
     }
   }
 
-  removeKeyWord = (word) => {
+  removeKeyWord = (word, messageid) => {
     let list = this.state.keywordsSelected;
-    let index = list.indexOf(word);
+    let index = list.findIndex(function(element){return(element.content===word && element.parentMessageId===messageid);});
     if (index > -1) {
       list.splice(index, 1);
     }
     this.setState({ keywordsSelected: list });
+    this.state.messages[messageid].keywords.push(word);
   }
 
   render() {
@@ -133,13 +135,13 @@ class ChatBot extends Component {
         <MessageContainer updateKeyWords={this.updateKeyWords} messages={this.state.messages} />
         <div className="QueryBox">
           <input id="Input" className="InputMessage" type="text" onKeyUp={this.handleKeys}
-            placeholder="Ask me !" autoComplete="off" ></input>
+            placeholder="Search for keywords" autoComplete="off" ></input>
           <button onClick={this.handleClick} id="SubmitButton" type="submit">Send</button>
         </div>
         <div className="keywords-selected">
           {this.state.keywordsSelected.map(keyword => {
             this.keyCounter += 1;
-            return <KeyWord key={"kws-" + this.keyCounter} updateKeyWords={() => {}} removeKeyWord={this.removeKeyWord} word={keyword} CName="keyWordS" ShowCloseCross={true} />
+            return <KeyWord key={"kws-" + this.keyCounter} updateKeyWords={() => {}} removeKeyWord={this.removeKeyWord} word={keyword.content} parentMessageId={keyword.parentMessageId} CName="keyWordS" ShowCloseCross={true} />
           })}
         </div>
       </div>

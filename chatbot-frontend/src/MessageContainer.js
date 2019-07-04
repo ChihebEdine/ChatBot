@@ -18,7 +18,7 @@ class MessageContainer extends Component {
         else if(message.author === "bot") {
             return (
                 <div key = {"d" + message.id}>
-                    <BotMessage updateKeyWords={this.props.updateKeyWords} key={message.id} content={message.content} keywords={message.keywords} ShowCloseCross={false}/>
+                    <BotMessage updateKeyWords={this.props.updateKeyWords} key={message.id} messageid ={message.id}  content={message.content} keywords={message.keywords} ShowCloseCross={false}/>
                     <DateTime key={"t" + message.id} position="left"/>
                 </div>);
         }

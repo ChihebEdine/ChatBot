@@ -30,7 +30,7 @@ class BotMessage extends Component {
                 <div>
                     {this.state.keywords.map(keyword => {
                         this.keyCounter += 1;
-                        return <KeyWord key={"kwb-" + this.keyCounter} updateKeyWords={this.props.updateKeyWords} removeKeyWord={this.removeKeyWord} word={keyword} CName="keyWordL" ShowCloseCross={false}/>;
+                        return <KeyWord parentMessageId = {this.props.messageid} key={"kwb-" + this.keyCounter} updateKeyWords={this.props.updateKeyWords} removeKeyWord={this.removeKeyWord} word={keyword} CName="keyWordL" ShowCloseCross={false}/>;
                     })}
                 </div>
             </div>

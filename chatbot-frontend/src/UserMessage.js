@@ -14,7 +14,7 @@ class UserMessage extends Component {
                 <div>
                     {this.props.keywords.map(keyword => {
                         this.keyCounter += 1;
-                        return <KeyWord key={"kwu-" + this.keyCounter } updateKeyWords={() => {}} removeKeyWord ={() => { }} word={keyword} CName = "keyWordR" ShowCloseCross={false}/>;
+                        return <KeyWord key={"kwu-" + this.keyCounter } updateKeyWords={() => {}} removeKeyWord ={() => { }} word={keyword} CName = "keyWordR" ShowCloseCross={false} />;
                     })}
                 </div>
             </div>
