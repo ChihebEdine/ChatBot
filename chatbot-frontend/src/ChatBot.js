@@ -75,6 +75,7 @@ class ChatBot extends Component {
 
       ChatSocket.onerror = e => {
         this.addMessage("bot", "Error : failed to connect to Django server", []);
+        this.setState({keywordsSelected:[]})
         MC.scrollTop = MC.scrollHeight;
         button.className = 'ready';
       }
