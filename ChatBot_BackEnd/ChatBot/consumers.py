@@ -1,7 +1,11 @@
 from channels.generic.websocket import WebsocketConsumer
+from ChatBot.models import Message
 import json
 
+
+
 class ChatConsumer(WebsocketConsumer):
+
     def connect(self):
         self.accept()
 
@@ -14,13 +18,21 @@ class ChatConsumer(WebsocketConsumer):
         user_message = [ k.strip() for k in user_message]
         user_message = [ k for k in user_message if k!='' and k != ' ']
         
-
         selected_keywords = data['keywordsSelected']
         keywords = selected_keywords + user_message
 
+        # saving user message in the db
+        um = Message(author="user", key_words=str(keywords))
+        um.save()
+
         # call the chatbot API here
-        bot_message = "message recieved ! but i am not available !"
+        bot_message = "message recieved ! but i am not available ! these are the key words you have selected"
         bot_keywords = keywords
+
+        # saving bot message in the db
+        bm = Message(author="bot", key_words=str(bot_keywords))
+        bm.save()
+
         return(bot_message, bot_keywords)
         
 
