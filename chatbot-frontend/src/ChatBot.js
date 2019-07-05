@@ -16,6 +16,7 @@ class ChatBot extends Component {
     path: 'ws://127.0.0.1:8000/ws/chatbot/',
     count: 0,
     keywordsSelected: [],
+    previous_message_id: null
   };
 
   keyCounter = 0;
@@ -69,7 +70,11 @@ class ChatBot extends Component {
       let ChatSocket = new WebSocket(this.state.path);
 
       ChatSocket.onopen = e => {
-        ChatSocket.send(JSON.stringify({ 'message': user_message, 'keywordsSelected': this.state.keywordsSelected.map(s => s.content) }));
+        ChatSocket.send(JSON.stringify({ 
+          'message': user_message,
+          'keywordsSelected': this.state.keywordsSelected.map(s => s.content),
+          'previous_message_id': this.state.previous_message_id
+      }));
         this.setState({ keywordsSelected: [] });
       };
 
@@ -83,9 +88,11 @@ class ChatBot extends Component {
       ChatSocket.onmessage = e => {
         button.className = 'ready';
         var data = JSON.parse(e.data);
+        this.setState({previous_message_id : data['bot_message_id']})
 
         this.addMessage("bot", data['message'], data['keywords']);
         MC.scrollTop = MC.scrollHeight;
+        ChatSocket.close();
       }
     }
     else {

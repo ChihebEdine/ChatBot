@@ -22,25 +22,28 @@ class ChatConsumer(WebsocketConsumer):
         keywords = selected_keywords + user_message
 
         # saving user message in the db
-        um = Message(author="user", key_words=str(keywords))
+        um = Message(author="user", key_words=str(keywords), previous_message_id=data['previous_message_id'])
         um.save()
 
         # call the chatbot API here
-        bot_message = "message recieved ! but i am not available ! these are the key words you have selected"
+        bot_message = "message recieved ! but i am not available ! these are the key words you have entered/selected"
         bot_keywords = keywords
+        # bot_message, bot_keywords = BOT(keywords)
+
 
         # saving bot message in the db
-        bm = Message(author="bot", key_words=str(bot_keywords))
+        bm = Message(author="bot", key_words=str(bot_keywords), previous_message_id=um.id)
         bm.save()
-
-        return(bot_message, bot_keywords)
+        
+        return(bot_message, bot_keywords, bm.id)
         
 
     def receive(self, text_data):
         recieved_data_json = json.loads(text_data)
-        bot_message, bot_keywords = self.AskChatBot(recieved_data_json)
+        bot_message, bot_keywords, bmid = self.AskChatBot(recieved_data_json)
 
         self.send(text_data=json.dumps({
             'message': bot_message,
-            'keywords': bot_keywords
+            'keywords': bot_keywords,
+            'bot_message_id' : bmid
         }))
