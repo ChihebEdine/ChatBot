@@ -5,7 +5,6 @@ import ChatBot from './ChatBot';
 import * as serviceWorker from './serviceWorker';
 
 
-
 ReactDOM.render(<ChatBot />, document.getElementById('root'));
 
 serviceWorker.unregister();
