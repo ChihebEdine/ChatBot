@@ -21,23 +21,27 @@ from nltk import word_tokenize
 
 stop_words = set(stopwords.words('english'))
 
+embedding_file='glove.6B.300d.txt'
+
+embeddings = pd.read_csv('ChatBot/SearchBot/data/embeddings/' + embedding_file, sep=" ", index_col=0, header=None, quoting=csv.QUOTE_NONE)
+data = pickle.load(open('ChatBot/SearchBot/data/clean_data', 'rb'))
+feature_embedding = pickle.load(open('ChatBot/SearchBot/data/feature_embedding_' + embedding_file[:-4], 'rb'))
+description_embedding = pickle.load(open('ChatBot/SearchBot/data/description_embedding_' + embedding_file[:-4], 'rb'))
+news_embedding = pickle.load(open('ChatBot/SearchBot/data/news_embedding_' + embedding_file[:-4], 'rb'))
+
+
 
 class Searchbot:
 
-    def __init__(self, embedding_file='glove.6B.300d.txt'):
+    def __init__(self):
 
         self.stop_words = set(stopwords.words('english'))
 
-        self.embeddings = pd.read_csv('ChatBot/SearchBot/data/embeddings/' +
-                                      embedding_file, sep=" ", index_col=0, header=None, quoting=csv.QUOTE_NONE)
-        self.data = pickle.load(
-            open('ChatBot/SearchBot/data/clean_data', 'rb'))
-        self.feature_embedding = pickle.load(
-            open('ChatBot/SearchBot/data/feature_embedding_' + embedding_file[:-4], 'rb'))
-        self.description_embedding = pickle.load(open(
-            'ChatBot/SearchBot/data/description_embedding_' + embedding_file[:-4], 'rb'))
-        self.news_embedding = pickle.load(
-            open('ChatBot/SearchBot/data/news_embedding_' + embedding_file[:-4], 'rb'))
+        self.embeddings = embeddings
+        self.data = data
+        self.feature_embedding = feature_embedding
+        self.description_embedding = description_embedding
+        self.news_embedding = news_embedding
 
         self.market_cap_mean = self.data['Market Cap'].mean()
 
@@ -105,7 +109,7 @@ class Searchbot:
             elif user_input == '0':
 
                 print(self.relevant_companies[['Name', 'Relevance']].head(20))
-                print('I have found companies related to ' + str(self.best_keywords.values) +
+                print('I have found companies related to ' + str(self.best_keywords) +
                       '? Which keywords would you like to restrict your search to?')
 
                 return 1, False
@@ -364,11 +368,12 @@ class Searchbot:
             if button_pressed: 
 
                 print(self.relevant_companies[['Name','Relevance']].head(20))
-                print('I have found companies related to ' + str(self.best_keywords.values) + '? Which keywords would you like to restrict your search to?')
+                print('I have found companies related to ' + str(self.best_keywords) + '? Which keywords would you like to restrict your search to?')
 
                 new_action = 1
-                bot_message = self.relevant_companies[['Name','Relevance']].head(20).to_string()
-                bot_keywords = self.best_keywords.values
+                bot_message = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values) \
+                    + '. I have found companies related to these keywords. Which keywords would you like to restrict your search to?'
+                bot_keywords = self.best_keywords
                 need_button = False
                  
                 return new_action, bot_message, bot_keywords, need_button
@@ -410,8 +415,8 @@ class Searchbot:
                     + ". Which sectors would you like to restrict your search to? Alternatively, you can press 1 to reset or 0 to see the most relevant companies.")
 
                 new_action = 2
-                bot_message = self.relevant_companies[['Name','Relevance']].head(20).to_string() + '\n  Great! The most relevant companies work in the following sectors.' \
-                              +'Press the button to see the most relevant companies I have found. Alternatively you can select the sectors you would like to restrict your search to?'
+                bot_message = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values) + '. Great! The most relevant companies work in the following sectors.' \
+                              +' Press the button to see the most relevant companies I have found. Alternatively you can select the sectors you would like to restrict your search to?'
                 
                 bot_keywords = list(best_sectors.keys().values)
                 need_button = True
@@ -455,7 +460,7 @@ class Searchbot:
                 print(self.relevant_companies[['Name','Relevance']].head(20))
 
                 new_action = 3
-                bot_message = self.relevant_companies[['Name','Relevance']].head(20).to_string()
+                bot_message = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values)
                 bot_keywords = []
                 need_button = True
 
@@ -466,8 +471,8 @@ class Searchbot:
                     print('Could you tell me more about the country or region the company is listed in, and/or give me more keywords?' \
                         + 'Alternatively, you can press 1 to reset or 0 to see the most relevant companies.')
 
-                    bot_messge += ' \n Could you tell me more about the country or region the company is listed in, and/or give me more keywords?' \
-                        + 'Alternatively, you can press the button to see the most relevant companies.'
+                    bot_message += ' Could you tell me more about the country or region the company is listed in, and/or give me more keywords?' \
+                        + ' Alternatively, you can press the button to see the most relevant companies.'
                         
                 else:
 
@@ -485,10 +490,16 @@ class Searchbot:
                 print('The most relevant companies are: ' + str(self.relevant_companies[['Name','Relevance']].head(20)))
 
                 new_action = 0
-                bot_message = self.relevant_companies[['Name','Relevance']].head(20).to_string()
+                bot_message = 'The most relevant companies are: ' + FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values)
                 bot_keywords = []
                 need_button = False
 
                 return new_action, bot_message, bot_keywords, need_button
 
         
+
+def FormatTable(Names, Relevance):
+    s = ''
+    for i in range(len(Names)):
+        s += (str(Names[i][0]) + ' (' + str(Relevance[i][0]) + '), ')
+    return s

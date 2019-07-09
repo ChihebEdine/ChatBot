@@ -13,31 +13,32 @@ class ChatBot extends Component {
         id: 0,
         author: 'bot',
         content: 'Welcome to Unchartech Searchbot! What type of company are you looking for?',
-        keywords: []
+        keywords: [],
+        need_button: false
       }
     ],
     selectedText: "",
-    count: 1,
     keywordsSelected: [],
     previous_message_id: null,
-    ChatSocket: null,
   };
 
   keyCounter = 0;
+  ChatSocket = null;
+  count =  1;
 
-  addMessage = (author, message, keywords) => {
+  addMessage = (author, message, keywords, need_button) => {
     let NewMessage = {
-      id: this.state.count,
+      id: this.count,
       author: author,
       content: message,
-      keywords: keywords
+      keywords: keywords,
+      need_button: need_button
     }
 
     var Messages = this.state.messages;
     Messages.push(NewMessage);
     this.setState({ messages: Messages });
-
-    this.setState({ count: this.state.count + 1 });
+    this.count += 1;
   }
 
   handleKeys = (e) => {
@@ -61,63 +62,113 @@ class ChatBot extends Component {
     if (input.value !== "" || (this.state.keywordsSelected).length !== 0) {
       let value = input.value;
       if (value === "") { value = "..." }
-      this.addMessage("user", value, this.state.keywordsSelected.map(w => w.content));
+      this.addMessage("user", value, this.state.keywordsSelected.map(w => w.content), false);
       MC.scrollTop = MC.scrollHeight;
 
       let user_message = input.value;
       input.value = "";
 
-      let socket;
-      if (this.state.ChatSocket === null) {
-        socket = new WebSocket('ws://127.0.0.1:8000/ws/chatbot/');
 
-        socket.onerror = e => {
+      if (this.ChatSocket === null) {
+        this.ChatSocket = new WebSocket('ws://127.0.0.1:8000/ws/chatbot/');
+
+        this.ChatSocket.onerror = e => {
           e.preventDefault();
-          this.addMessage("bot", "Error : failed to connect to Django server", []);
+          this.addMessage("bot", "Error : failed to connect to Django server", [], false);
           this.setState({ keywordsSelected: [] })
           MC.scrollTop = MC.scrollHeight;
           button.className = 'ready';
         }
 
-        this.setState({ ChatSocket: socket });
-      }
-      else {
-        socket = this.state.ChatSocket;
-      }
+        this.ChatSocket.onclose = e => {
+          e.preventDefault();
+          this.addMessage("bot", "Error : the connection to Django server is lost", [], false);
+          this.setState({ keywordsSelected: [] })
+          MC.scrollTop = MC.scrollHeight;
+          button.className = 'ready';
+          //document.location.reload();
 
-      if (socket.readyState === 1) {
-        socket.send(JSON.stringify({
+        }
+      }
+      console.log('state', this.ChatSocket.readyState)
+
+
+      if (this.ChatSocket.readyState === 1) {
+        this.ChatSocket.send(JSON.stringify({
           'message': user_message,
           'keywordsSelected': this.state.keywordsSelected.map(s => s.content),
-          'previous_message_id': this.state.previous_message_id
+          'previous_message_id': this.state.previous_message_id,
+          'button_pressed': false
         }));
         this.setState({ keywordsSelected: [] });
       }
-      else {
-        socket.onopen = e => {
-          socket.send(JSON.stringify({
+      else if (this.ChatSocket.readyState === 0) {
+        this.ChatSocket.onopen = e => {
+          this.ChatSocket.send(JSON.stringify({
             'message': user_message,
             'keywordsSelected': this.state.keywordsSelected.map(s => s.content),
-            'previous_message_id': this.state.previous_message_id
+            'previous_message_id': this.state.previous_message_id,
+            'button_pressed': false
           }));
           this.setState({ keywordsSelected: [] });
         };
       }
 
+      else {
+        this.addMessage("bot", "Error : failed to connect to Django server", [], false);
+        this.setState({ keywordsSelected: [] })
+        MC.scrollTop = MC.scrollHeight;
+        button.className = 'ready';
+      }
 
-      socket.onmessage = e => {
+      this.ChatSocket.onmessage = e => {
         button.className = 'ready';
         var data = JSON.parse(e.data);
         this.setState({ previous_message_id: data['bot_message_id'] })
-
-        this.addMessage("bot", data['message'], data['keywords']);
+        this.addMessage("bot", data['message'], data['keywords'], data['need_button']);
         MC.scrollTop = MC.scrollHeight;
       }
+
+      
 
     }
     else {
       button.className = 'ready';
     }
+  }
+
+  ShowResults = (id) => {
+
+    if (this.count - 1 === id) {
+      //button loading state
+      var button = document.getElementById('SubmitButton');
+      button.className = 'loading';
+
+      //getting the user's message
+      let MC = document.getElementById('MC');
+      let input = document.getElementById('Input');
+      input.value = "";
+
+      this.addMessage("user", 'Show me what you have found', [], false);
+      MC.scrollTop = MC.scrollHeight;
+
+      this.ChatSocket.send(JSON.stringify({
+        'message': '',
+        'keywordsSelected': [],
+        'previous_message_id': this.state.previous_message_id,
+        'button_pressed': true
+      }));
+
+      this.ChatSocket.onmessage = e => {
+        button.className = 'ready';
+        var data = JSON.parse(e.data);
+        this.setState({ previous_message_id: data['bot_message_id'] })
+        // treat bot_message
+        this.addMessage("bot", data['message'], data['keywords'], data['need_button']);
+        MC.scrollTop = MC.scrollHeight;
+      }
+    }
+
   }
 
   handleClickOnBox = (e) => {
@@ -161,11 +212,11 @@ class ChatBot extends Component {
       <div id="cbc" onClick={this.handleClickOnBox} className="ChatBotContainer">
         <SelectionMenu selectedText={this.state.selectedText} />
         <div className="NameBox">Chat Bot</div>
-        <MessageContainer updateKeyWords={this.updateKeyWords} messages={this.state.messages} />
+        <MessageContainer updateKeyWords={this.updateKeyWords} messages={this.state.messages} handleShowClick={this.ShowResults} />
         <div className="QueryBox">
           <input id="Input" className="InputMessage" type="text" onKeyUp={this.handleKeys}
             placeholder="Search for keywords" autoComplete="off" ></input>
-          <button onClick={this.handleClick} id="SubmitButton" type="submit">Send</button>
+          <button onClick={this.handleClick} id="SubmitButton" type="submit" >Send</button>
         </div>
         <div className="keywords-selected">
           {this.state.keywordsSelected.map(keyword => {

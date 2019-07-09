@@ -21,3 +21,10 @@
   box-shadow: 1px 1px 5px 1px rgba(140,140,140,1);
   transform: translate(10px);
 }
+
+
+.bot-message-container{
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto auto auto;
+}

@@ -5,4 +5,29 @@
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
+    scroll-behavior: smooth;
   }
+
+
+  /* Scrolling bar style */
+.MessageContainer::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.MessageContainer::-webkit-scrollbar-track {
+  background-color: rgb(200, 200, 200);
+}
+ 
+/* Handle */
+.MessageContainer::-webkit-scrollbar-thumb {
+  background-color: orangered;
+  transition: all 0.25s;
+  
+}
+
+/* Handle on hover */
+.MessageContainer::-webkit-scrollbar-thumb:hover {
+  background: orange;
+
+}

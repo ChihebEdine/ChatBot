@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './BotMessage.css';
-import KeyWord from './KeyWord'
+import KeyWord from './KeyWord';
+import ShowButton from './ShowButton';
 
 
 class BotMessage extends Component {
@@ -21,9 +22,16 @@ class BotMessage extends Component {
         this.setState({ keywords : list });
     }
 
+    DisplayShowButton = () => {
+        if(this.props.NeedButton){
+            return <ShowButton parentid = {this.props.messageid} handleShowClick={this.props.handleShowClick}/>
+        }
+
+    }
+
     render() {
         return (
-            <div>
+            <div className='bot-message-container' >
                 <div className="BotMessage">
                     {this.props.content}
                 </div>
@@ -33,6 +41,7 @@ class BotMessage extends Component {
                         return <KeyWord parentMessageId = {this.props.messageid} key={"kwb-" + this.keyCounter} updateKeyWords={this.props.updateKeyWords} removeKeyWord={this.removeKeyWord} word={keyword} CName="keyWordL" ShowCloseCross={false}/>;
                     })}
                 </div>
+                {this.DisplayShowButton()}
             </div>
 
         );
