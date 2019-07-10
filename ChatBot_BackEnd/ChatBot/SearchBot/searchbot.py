@@ -333,6 +333,7 @@ class Searchbot:
         bot_message = ''
         bot_keywords = []
         need_button = True
+        company_table = []
          
         if action == 0:
             self.encode_response(user_input)
@@ -359,8 +360,9 @@ class Searchbot:
                           + '. Which keywords would you like to restrict your search to?'
             bot_keywords = self.best_keywords
             need_button = True
+            company_table = []
 
-            return new_action, bot_message, bot_keywords, need_button
+            return new_action, bot_message, bot_keywords, need_button, company_table
         
 
         elif action == 1:
@@ -371,12 +373,12 @@ class Searchbot:
                 print('I have found companies related to ' + str(self.best_keywords) + '? Which keywords would you like to restrict your search to?')
 
                 new_action = 1
-                bot_message = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values) \
-                    + '. I have found companies related to these keywords. Which keywords would you like to restrict your search to?'
+                bot_message =  'I have found companies related to these keywords. Which keywords would you like to restrict your search to?'
                 bot_keywords = self.best_keywords
                 need_button = False
+                company_table = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values)
                  
-                return new_action, bot_message, bot_keywords, need_button
+                return new_action, bot_message, bot_keywords, need_button, company_table
 
             else:
 
@@ -397,8 +399,9 @@ class Searchbot:
                 bot_message = "Great! I have found companies that work in the following sectors. Press the button to see the most relevant companies I have found. Which sectors would you like to restrict your search to?"
                 bot_keywords = list(best_sectors.keys().values)
                 need_button = True
+                company_table = []
 
-                return new_action, bot_message, bot_keywords, need_button
+                return new_action, bot_message, bot_keywords, need_button, company_table
             
 
         elif action == 2:
@@ -415,13 +418,14 @@ class Searchbot:
                     + ". Which sectors would you like to restrict your search to? Alternatively, you can press 1 to reset or 0 to see the most relevant companies.")
 
                 new_action = 2
-                bot_message = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values) + '. Great! The most relevant companies work in the following sectors.' \
+                bot_message = 'Great! The most relevant companies work in the following sectors.' \
                               +' Press the button to see the most relevant companies I have found. Alternatively you can select the sectors you would like to restrict your search to?'
                 
                 bot_keywords = list(best_sectors.keys().values)
                 need_button = True
+                company_table = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values)
 
-                return new_action, bot_message, bot_keywords, need_button
+                return new_action, bot_message, bot_keywords, need_button, company_table
 
             else:
 
@@ -438,6 +442,7 @@ class Searchbot:
                 bot_message = ''
                 bot_keywords = []
                 need_button = True
+                company_table = []
 
                 if not self.inferred_responses['Country'] and not self.inferred_responses['Region']:
 
@@ -450,7 +455,7 @@ class Searchbot:
                     print("Would you like to give me some more keywords relating to the sectors you chose? Alternatively, you can press 1 to reset or 0 to see the most relevant companies.")
                     bot_message = "Would you like to give me some more keywords relating to the sectors you chose? Alternatively, you can press the button to see the most relevant companies."
 
-                return new_action, bot_message, bot_keywords, need_button
+                return new_action, bot_message, bot_keywords, need_button, company_table
             
 
         elif action == 3:
@@ -460,9 +465,10 @@ class Searchbot:
                 print(self.relevant_companies[['Name','Relevance']].head(20))
 
                 new_action = 3
-                bot_message = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values)
+                bot_message = ''
                 bot_keywords = []
                 need_button = True
+                company_table = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values)
 
                 
 
@@ -471,8 +477,8 @@ class Searchbot:
                     print('Could you tell me more about the country or region the company is listed in, and/or give me more keywords?' \
                         + 'Alternatively, you can press 1 to reset or 0 to see the most relevant companies.')
 
-                    bot_message += ' Could you tell me more about the country or region the company is listed in, and/or give me more keywords?' \
-                        + ' Alternatively, you can press the button to see the most relevant companies.'
+                    bot_message += (' Could you tell me more about the country or region the company is listed in, and/or give me more keywords?' \
+                        + ' Alternatively, you can press the button to see the most relevant companies.')
                         
                 else:
 
@@ -480,7 +486,7 @@ class Searchbot:
 
                     bot_message += "Would you like to give me some more keywords relating to the sectors you chose? Alternatively, you can press the button to see the most relevant companies."
 
-                return new_action, bot_message, bot_keywords, need_button
+                return new_action, bot_message, bot_keywords, need_button, company_table
 
             else:
 
@@ -490,16 +496,17 @@ class Searchbot:
                 print('The most relevant companies are: ' + str(self.relevant_companies[['Name','Relevance']].head(20)))
 
                 new_action = 0
-                bot_message = 'The most relevant companies are: ' + FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values)
+                bot_message = 'these are the most relevant companies'
                 bot_keywords = []
                 need_button = False
+                company_table = FormatTable(self.relevant_companies[['Name']].head(10).values, self.relevant_companies[['Relevance']].head(10).values)
 
-                return new_action, bot_message, bot_keywords, need_button
+                return new_action, bot_message, bot_keywords, need_button, company_table
 
         
 
 def FormatTable(Names, Relevance):
-    s = ''
+    table = []
     for i in range(len(Names)):
-        s += (str(Names[i][0]) + ' (' + str(Relevance[i][0]) + '), ')
-    return s
+        table.append({'name': Names[i][0], 'relevance': Relevance[i][0] })
+    return table

@@ -33,29 +33,30 @@ class ChatConsumer(WebsocketConsumer):
             user_input += (k + ',')
 
         # saving user message in the db
-        um = Message(author="user", key_words=str(keywords), previous_message_id=data['previous_message_id'])
+        um = Message(author="user", message=str(keywords), previous_message_id=data['previous_message_id'])
         um.save()
 
         # call the chatbot API here
         #bot_message = "message recieved ! but i am not available ! these are the key words you have entered/selected"
         #bot_keywords = keywords
-        self.bot_action, bot_message, bot_keywords, need_button = self.bot.ACT(self.bot_action, user_input , button_pressed=bool(data['button_pressed']))
+        self.bot_action, bot_message, bot_keywords, need_button, company_table = self.bot.ACT(self.bot_action, user_input , button_pressed=bool(data['button_pressed']))
         bot_keywords = [ k.strip() for k in bot_keywords if k!='' and k != ' ']
 
         # saving bot message in the db
-        bm = Message(author="bot", key_words=str(bot_keywords), previous_message_id=um.id)
+        bm = Message(author="bot", message=str(bot_keywords)+'---'+str(company_table), previous_message_id=um.id)
         bm.save()
         
-        return(bot_message, bot_keywords, bm.id, need_button)
+        return(bot_message, bot_keywords, bm.id, need_button, company_table)
         
 
     def receive(self, text_data):
         recieved_data_json = json.loads(text_data)
-        bot_message, bot_keywords, bmid, need_button = self.AskChatBot(recieved_data_json)
+        bot_message, bot_keywords, bmid, need_button, company_table = self.AskChatBot(recieved_data_json)
 
         self.send(text_data=json.dumps({
             'message': bot_message,
             'keywords': bot_keywords,
             'bot_message_id' : bmid,
-            'need_button' : need_button
+            'need_button' : need_button,
+            'company_table' : company_table
         }))

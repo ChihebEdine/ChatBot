@@ -14,7 +14,8 @@ class ChatBot extends Component {
         author: 'bot',
         content: 'Welcome to Unchartech Searchbot! What type of company are you looking for?',
         keywords: [],
-        need_button: false
+        need_button: false,
+        company_table: []
       }
     ],
     selectedText: "",
@@ -24,15 +25,39 @@ class ChatBot extends Component {
 
   keyCounter = 0;
   ChatSocket = null;
-  count =  1;
+  count = 1;
 
-  addMessage = (author, message, keywords, need_button) => {
+  resetBot = () => {
+    console.log("reset exec")
+    this.setState({
+      messages: [
+        {
+          id: 0,
+          author: 'bot',
+          content: 'Welcome to Unchartech Searchbot! What type of company are you looking for?',
+          keywords: [],
+          need_button: false,
+          company_table: []
+        }
+      ],
+      selectedText: "",
+      keywordsSelected: [],
+      previous_message_id: null,
+    })
+
+    this.keyCounter = 0;
+    this.ChatSocket = null;
+    this.count = 1;
+  }
+
+  addMessage = (author, message, keywords, need_button, company_table) => {
     let NewMessage = {
       id: this.count,
       author: author,
       content: message,
       keywords: keywords,
-      need_button: need_button
+      need_button: need_button,
+      company_table: company_table
     }
 
     var Messages = this.state.messages;
@@ -62,7 +87,7 @@ class ChatBot extends Component {
     if (input.value !== "" || (this.state.keywordsSelected).length !== 0) {
       let value = input.value;
       if (value === "") { value = "..." }
-      this.addMessage("user", value, this.state.keywordsSelected.map(w => w.content), false);
+      this.addMessage("user", value, this.state.keywordsSelected.map(w => w.content), false, []);
       MC.scrollTop = MC.scrollHeight;
 
       let user_message = input.value;
@@ -74,24 +99,24 @@ class ChatBot extends Component {
 
         this.ChatSocket.onerror = e => {
           e.preventDefault();
-          this.addMessage("bot", "Error : failed to connect to Django server", [], false);
-          this.setState({ keywordsSelected: [] })
+          this.addMessage("bot", "error : failed to connect to Django server, resetting ...", [], false, []);
+          //this.setState({ keywordsSelected: [] })
+          setTimeout( this.resetBot, 3000);
           MC.scrollTop = MC.scrollHeight;
           button.className = 'ready';
         }
 
         this.ChatSocket.onclose = e => {
           e.preventDefault();
-          this.addMessage("bot", "Error : the connection to Django server is lost", [], false);
-          this.setState({ keywordsSelected: [] })
+          this.addMessage("bot", "error : the connection to Django server is lost, resetting ...", [], false, []);
+          //this.setState({ keywordsSelected: [] })
+          setTimeout( this.resetBot, 3000);
           MC.scrollTop = MC.scrollHeight;
           button.className = 'ready';
           //document.location.reload();
 
         }
       }
-      console.log('state', this.ChatSocket.readyState)
-
 
       if (this.ChatSocket.readyState === 1) {
         this.ChatSocket.send(JSON.stringify({
@@ -115,8 +140,9 @@ class ChatBot extends Component {
       }
 
       else {
-        this.addMessage("bot", "Error : failed to connect to Django server", [], false);
-        this.setState({ keywordsSelected: [] })
+        this.addMessage("bot", "error : failed to connect to Django server, resetting ...", [], false, []);
+        //this.setState({ keywordsSelected: [] })
+        setTimeout( this.resetBot, 3000);
         MC.scrollTop = MC.scrollHeight;
         button.className = 'ready';
       }
@@ -125,11 +151,9 @@ class ChatBot extends Component {
         button.className = 'ready';
         var data = JSON.parse(e.data);
         this.setState({ previous_message_id: data['bot_message_id'] })
-        this.addMessage("bot", data['message'], data['keywords'], data['need_button']);
+        this.addMessage("bot", data['message'], data['keywords'], data['need_button'], data['company_table']);
         MC.scrollTop = MC.scrollHeight;
       }
-
-      
 
     }
     else {
@@ -149,7 +173,7 @@ class ChatBot extends Component {
       let input = document.getElementById('Input');
       input.value = "";
 
-      this.addMessage("user", 'Show me what you have found', [], false);
+      this.addMessage("user", 'Show me what you have found', [], false, []);
       MC.scrollTop = MC.scrollHeight;
 
       this.ChatSocket.send(JSON.stringify({
@@ -164,7 +188,7 @@ class ChatBot extends Component {
         var data = JSON.parse(e.data);
         this.setState({ previous_message_id: data['bot_message_id'] })
         // treat bot_message
-        this.addMessage("bot", data['message'], data['keywords'], data['need_button']);
+        this.addMessage("bot", data['message'], data['keywords'], data['need_button'], data['company_table']);
         MC.scrollTop = MC.scrollHeight;
       }
     }
@@ -209,7 +233,7 @@ class ChatBot extends Component {
 
   render() {
     return (
-      <div id="cbc" onClick={this.handleClickOnBox} className="ChatBotContainer">
+      <div id="cbc" className="ChatBotContainer">
         <SelectionMenu selectedText={this.state.selectedText} />
         <div className="NameBox">Chat Bot</div>
         <MessageContainer updateKeyWords={this.updateKeyWords} messages={this.state.messages} handleShowClick={this.ShowResults} />
@@ -231,3 +255,4 @@ class ChatBot extends Component {
 }
 
 export default ChatBot;
+//onClick={this.handleClickOnBox}
