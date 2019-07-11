@@ -7,9 +7,13 @@ import json
 
 class ChatConsumer(WebsocketConsumer):
 
-    bot =  None
-    bot_action = 0
+    def __init__(self, *args, **kwargs):
+        super()
+        super().__init__(*args, **kwargs)
+        self.bot =  None
+        self.bot_action = 0
     
+
 
     def connect(self):
         self.accept()
@@ -17,7 +21,8 @@ class ChatConsumer(WebsocketConsumer):
         
 
     def disconnect(self, close_code):
-        pass
+        del self.bot
+
 
     def AskChatBot(self, data):
         user_message = data['message']

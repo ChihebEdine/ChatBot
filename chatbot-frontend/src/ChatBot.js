@@ -28,7 +28,10 @@ class ChatBot extends Component {
   count = 1;
 
   resetBot = () => {
-    console.log("reset exec")
+    if (this.ChatSocket !== null) {
+      this.ChatSocket.onclose = () => {};
+      this.ChatSocket.close();
+    }
     this.setState({
       messages: [
         {
@@ -51,6 +54,7 @@ class ChatBot extends Component {
   }
 
   addMessage = (author, message, keywords, need_button, company_table) => {
+    let MC = document.getElementById('MC');
     let NewMessage = {
       id: this.count,
       author: author,
@@ -62,7 +66,7 @@ class ChatBot extends Component {
 
     var Messages = this.state.messages;
     Messages.push(NewMessage);
-    this.setState({ messages: Messages });
+    this.setState({ messages: Messages }, () => { MC.scrollTop = MC.scrollHeight;});
     this.count += 1;
   }
 
@@ -81,14 +85,12 @@ class ChatBot extends Component {
     button.className = 'loading';
 
     //getting the user's message
-    let MC = document.getElementById('MC');
     let input = document.getElementById('Input');
 
     if (input.value !== "" || (this.state.keywordsSelected).length !== 0) {
       let value = input.value;
       if (value === "") { value = "..." }
       this.addMessage("user", value, this.state.keywordsSelected.map(w => w.content), false, []);
-      MC.scrollTop = MC.scrollHeight;
 
       let user_message = input.value;
       input.value = "";
@@ -101,8 +103,7 @@ class ChatBot extends Component {
           e.preventDefault();
           this.addMessage("bot", "error : failed to connect to Django server, resetting ...", [], false, []);
           //this.setState({ keywordsSelected: [] })
-          setTimeout( this.resetBot, 3000);
-          MC.scrollTop = MC.scrollHeight;
+          setTimeout(this.resetBot, 3000);
           button.className = 'ready';
         }
 
@@ -110,8 +111,7 @@ class ChatBot extends Component {
           e.preventDefault();
           this.addMessage("bot", "error : the connection to Django server is lost, resetting ...", [], false, []);
           //this.setState({ keywordsSelected: [] })
-          setTimeout( this.resetBot, 3000);
-          MC.scrollTop = MC.scrollHeight;
+          setTimeout(this.resetBot, 3000);
           button.className = 'ready';
           //document.location.reload();
 
@@ -142,8 +142,7 @@ class ChatBot extends Component {
       else {
         this.addMessage("bot", "error : failed to connect to Django server, resetting ...", [], false, []);
         //this.setState({ keywordsSelected: [] })
-        setTimeout( this.resetBot, 3000);
-        MC.scrollTop = MC.scrollHeight;
+        setTimeout(this.resetBot, 3000);
         button.className = 'ready';
       }
 
@@ -152,7 +151,6 @@ class ChatBot extends Component {
         var data = JSON.parse(e.data);
         this.setState({ previous_message_id: data['bot_message_id'] })
         this.addMessage("bot", data['message'], data['keywords'], data['need_button'], data['company_table']);
-        MC.scrollTop = MC.scrollHeight;
       }
 
     }
@@ -169,12 +167,10 @@ class ChatBot extends Component {
       button.className = 'loading';
 
       //getting the user's message
-      let MC = document.getElementById('MC');
       let input = document.getElementById('Input');
       input.value = "";
 
       this.addMessage("user", 'Show me what you have found', [], false, []);
-      MC.scrollTop = MC.scrollHeight;
 
       this.ChatSocket.send(JSON.stringify({
         'message': '',
@@ -189,7 +185,6 @@ class ChatBot extends Component {
         this.setState({ previous_message_id: data['bot_message_id'] })
         // treat bot_message
         this.addMessage("bot", data['message'], data['keywords'], data['need_button'], data['company_table']);
-        MC.scrollTop = MC.scrollHeight;
       }
     }
 
@@ -235,7 +230,7 @@ class ChatBot extends Component {
     return (
       <div id="cbc" className="ChatBotContainer">
         <SelectionMenu selectedText={this.state.selectedText} />
-        <div className="NameBox">Chat Bot</div>
+        <div onClick={this.resetBot} className="NameBox">UncharTech Search Bot</div>
         <MessageContainer updateKeyWords={this.updateKeyWords} messages={this.state.messages} handleShowClick={this.ShowResults} />
         <div className="QueryBox">
           <input id="Input" className="InputMessage" type="text" onKeyUp={this.handleKeys}
