@@ -238,6 +238,12 @@ class ChatBot extends Component {
           <button onClick={this.handleClick} id="SubmitButton" type="submit" >Send</button>
         </div>
         <div className="keywords-selected">
+          { (() => {
+            if(this.state.keywordsSelected.length > 0){
+              return <div style={{padding : '0', margin:'0'}}> Selected key words : </div>
+            }
+          })()
+        }
           {this.state.keywordsSelected.map(keyword => {
             this.keyCounter += 1;
             return <KeyWord key={"kws-" + this.keyCounter} updateKeyWords={() => { }} removeKeyWord={this.removeKeyWord} word={keyword.content} parentMessageId={keyword.parentMessageId} CName="keyWordS" ShowCloseCross={true} />
