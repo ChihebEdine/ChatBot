@@ -51,6 +51,9 @@ class ChatBot extends Component {
     this.keyCounter = 0;
     this.ChatSocket = null;
     this.count = 1;
+
+    var button = document.getElementById('SubmitButton');
+    button.className = 'ready';
   }
 
   addMessage = (author, message, keywords, need_button, company_table) => {
@@ -194,6 +197,7 @@ class ChatBot extends Component {
     let cbc = document.getElementById('cbc');
     let sm = document.getElementById('SM');
     let s = window.getSelection();
+    console.log(s);
     if (!s.isCollapsed) {
       let dy = e.clientY - cbc.offsetTop;
       let dx = e.clientX - cbc.offsetLeft;
@@ -240,7 +244,7 @@ class ChatBot extends Component {
         <div className="keywords-selected">
           { (() => {
             if(this.state.keywordsSelected.length > 0){
-              return <div style={{padding : '0', margin:'0'}}> Selected key words : </div>
+              return <div style={{padding : '0', margin:'0'}}> Selected keywords : </div>
             }
           })()
         }
