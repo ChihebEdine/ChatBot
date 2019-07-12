@@ -5,6 +5,7 @@
 * Install python 
 * Install node.js
 * Make sure that pip and npm are in the PATH variable
+* Retrieve the data folder and put it in ChatBot/ChatBot_BackEnd/ChatBot/SearchBot
 
 ## I. Backend setup 
 
