@@ -83,7 +83,7 @@ class Searchbot:
             for w in self.responses['Description']:
                 word_embedding = get_sentence_embedding(
                     w, self.embeddings, self.stop_words)
-                if np.array_equal(word_embedding, np.zeros(self.embeddings.shape[1])):
+                if np.array_equal(word_embedding, np.zeros(self.embeddings.shape[1])) or inferred_embeddings.e:
                     self.best_keywords += [w]
                 else:
                     score += cosine_similarity(inferred_embeddings,
@@ -343,7 +343,8 @@ class Searchbot:
             score = pd.Series(np.zeros(len(inferred_embeddings)))
             for w in self.responses['Description']:
                 word_embedding = get_sentence_embedding(w, self.embeddings, self.stop_words)
-                if np.array_equal(word_embedding,np.zeros(self.embeddings.shape[1])):
+
+                if np.array_equal(word_embedding,np.zeros(self.embeddings.shape[1])) or inferred_embeddings.empty:
                     self.best_keywords += [w]
                 else:
                     score += cosine_similarity(inferred_embeddings, word_embedding)
